@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ChatInput from './ChatInput';
 import { Configuration, OpenAIApi } from 'openai';
 
+import '../css/Chat.css';
+
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
 
 function Chat() {
   const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastMessage] = useState(null);
   const [lastBotMessage, setLastBotMessage] = useState(null);
+  const [chatMessagesMargin, setChatMessagesMargin] = useState(70);
 
+  const chatInputRef = useRef(null);
 
   const addUserMessage = (messageText) => {
     const newMessage = {role: 'user', content: messageText};
@@ -30,7 +33,7 @@ function Chat() {
   }, [lastUserMessage]);
 
   useEffect(() => {
-    const allMessagesLength = allMessages.length
+    const allMessagesLength = allMessages.length;
     if (allMessagesLength === 0) return;
     if (allMessages[allMessagesLength - 1] === lastBotMessage) return;
 
@@ -48,19 +51,33 @@ function Chat() {
     getCompletion();
   }, [allMessages]);
 
+  useEffect(() => {
+    if (chatInputRef.current) {
+      setChatMessagesMargin(chatInputRef.current.offsetHeight + 10);
+    }
+  }, [chatInputRef.current?.offsetHeight]);
 
   return (
     <div className="chat">
-      {/* Передаем функцию addUserMessage в ChatInput */}
-      <ChatInput addUserMessage={addUserMessage}/>
-      {/* Отображаем все сообщения */}
-      {allMessages.map((message, index) => (
-        <div key={index} className={`message message__${message.role}`}>
-          {message.content}
-        </div>
-      ))}
+      <div className={`chat__messages`} style={{marginBottom: chatMessagesMargin}}>
+        {
+          allMessages.map((message, index) => (
+            <div key={index} className={`message chat__message message_${message.role}`}>
+              <div className="message__bubble">
+                <div className={`message-text message__text`}>
+                  {message.content}
+                </div>
+              </div>
+            </div>))
+        }
+      </div>
+      <ChatInput
+        addUserMessage={addUserMessage}
+        ref={chatInputRef}
+      />
     </div>
   );
 }
 
-export default Chat;
+export default Chat
+;

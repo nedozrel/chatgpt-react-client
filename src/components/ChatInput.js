@@ -1,21 +1,35 @@
 import { useState } from 'react';
 
-
 function ChatInput({addUserMessage}) {
   const [inputText, setInputText] = useState('');
+  const minTextareaHeight = 20;
+  const maxTextareaHeight = 120;
 
   const sendMessage = (message) => {
     setInputText('');
-    addUserMessage(message)
+    addUserMessage(message);
   };
 
-  const handleInputChange = (e) => {
+  const changeTextareaSize = (input) => {
+    input.style.height = 'auto'; // сбрасываем фиксированную высоту, чтобы определить реальную высоту текста
+    input.style.height = `${Math.min(Math.max(input.scrollHeight, minTextareaHeight), maxTextareaHeight)}px`; // устанавливаем высоту textarea в зависимости от ее содержимого
+
+  };
+
+  const handleTextareaChange = (e) => {
+    changeTextareaSize(e.target);
     setInputText(e.target.value);
   };
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      sendMessage(inputText);
+  const handleTextareaFocus = (e) => {
+    changeTextareaSize(e.target);
+  };
+
+  const handleTextareaKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(inputText.trim());
+      changeTextareaSize(e.target);
     }
   };
 
@@ -25,11 +39,15 @@ function ChatInput({addUserMessage}) {
 
   return (
     <div className="chat-input">
-      <input
-        type="text"
+      <textarea
+        autoFocus
+        rows="1"
+        placeholder="Send a message..."
+        tabIndex="0"
         className="chat-input__input"
-        onChange={e => handleInputChange(e)}
-        onKeyDown={e => handleInputKeyDown(e)}
+        onChange={e => handleTextareaChange(e)}
+        onKeyDown={e => handleTextareaKeyDown(e)}
+        onFocus={e => handleTextareaFocus(e)}
         value={inputText}
       />
       <button
