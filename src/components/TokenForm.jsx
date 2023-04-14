@@ -42,7 +42,7 @@ function TokenForm({ isOpen, onClose, setApi }) {
             value={formValue.apiKey}
             onChange={handleChange}
           />
-          <button className={`popup__form-button-submit`} type="submit">
+          <button className="popup__form-button-submit" type="submit">
             Подтвердить
           </button>
         </form>
