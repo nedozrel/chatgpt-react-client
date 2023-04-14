@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import ChatInput from './ChatInput';
 import InfoTooltipPopup from './InfoTooltip';
+import TokenForm from './TokenForm';
 import { Configuration, OpenAIApi } from 'openai';
 
 import '../css/Chat.css';
 
-const configuration = new Configuration({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+let configuration;
+let openai;
 
 // TODO: сообщениям нужны айдишники, чтобы при одинаковом тексте сообщения не считались одинаковыми
 function Chat() {
   const [isValid, setIsValid] = useState(false);
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
   const [infoToolText, setInfoToolText] = useState(null);
+
+  const [isSetApiKeyPopupOpen, setIsSetApiKeyPopupOpen] = useState(false);
+  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey'));
 
   const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
@@ -28,6 +30,19 @@ function Chat() {
     const newMessage = { role: 'user', content: messageText };
     setLastUserMessage(newMessage);
   };
+
+  const checkApiKey = () => {
+    if (apiKey) {
+      configuration = new Configuration({
+        apiKey,
+      });
+      openai = new OpenAIApi(configuration);
+    } else {
+      setIsSetApiKeyPopupOpen(true);
+    }
+  };
+
+  useEffect(checkApiKey, [apiKey]);
 
   useEffect(() => {
     if (!Object.is(prevLastUserMessageRef.current, lastUserMessage)) {
@@ -65,7 +80,7 @@ function Chat() {
         });
         setLastBotMessage(completion.data.choices[0].message);
       } catch (error) {
-        openInfoTooltip(false, 'Неверный токен')
+        openInfoTooltip(false, 'Неверный токен');
         setInfoTooltipPopupOpen(true);
         console.error(error);
       }
@@ -77,7 +92,7 @@ function Chat() {
     setIsValid(valid);
     text && setInfoToolText(text);
     setInfoTooltipPopupOpen(true);
-  }
+  };
 
   return (
     <>
@@ -100,9 +115,21 @@ function Chat() {
       </div>
       <InfoTooltipPopup
         isOpen={isInfoTooltipPopupOpen}
-        onClose={() => {setInfoTooltipPopupOpen(false); setTimeout(() => {setInfoToolText(null)}, 300)}}
+        onClose={() => {
+          setInfoTooltipPopupOpen(false);
+          setTimeout(() => {
+            setInfoToolText(null);
+          }, 300);
+        }}
         isValid={isValid}
         text={infoToolText}
+      />
+      <TokenForm
+        isOpen={isSetApiKeyPopupOpen}
+        onClose={() => {
+          setIsSetApiKeyPopupOpen(false);
+        }}
+        setApi={setApiKey}
       />
     </>
   );
