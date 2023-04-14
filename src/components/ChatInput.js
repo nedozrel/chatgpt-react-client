@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+// TODO: По хорошему взорвать бы все это говно и сделать заново, стили и верстку так точно
 function ChatInput({addUserMessage}) {
   const [inputText, setInputText] = useState('');
   const minTextareaHeight = 20;
@@ -29,6 +30,7 @@ function ChatInput({addUserMessage}) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(inputText.trim());
+      // TODO: почему то не работает, надо сделать чтоб инпут менял размер при отправке
       changeTextareaSize(e.target);
     }
   };
@@ -49,6 +51,7 @@ function ChatInput({addUserMessage}) {
         onKeyDown={e => handleTextareaKeyDown(e)}
         onFocus={e => handleTextareaFocus(e)}
         value={inputText}
+        // Тут тоже наверное стоит сделать ref и через него менять размер
       />
       <button
         className="chat-input__btn-send"

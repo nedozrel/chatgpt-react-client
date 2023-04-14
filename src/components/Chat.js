@@ -11,16 +11,22 @@ const openai = new OpenAIApi(configuration);
 
 function Chat() {
   const [allMessages, setAllMessages] = useState([]);
-  const [lastUserMessage, setLastMessage] = useState(null);
+  const [lastUserMessage, setLastUserMessage] = useState(null);
   const [lastBotMessage, setLastBotMessage] = useState(null);
   const [chatMessagesMargin, setChatMessagesMargin] = useState(70);
 
   const chatInputRef = useRef(null);
+  const chatMessagesRef = useRef(null);
 
   const addUserMessage = (messageText) => {
     const newMessage = {role: 'user', content: messageText};
-    setLastMessage(newMessage);
+    setLastUserMessage(newMessage);
   };
+
+  useEffect(() => {
+    if (chatMessagesRef)
+      chatMessagesRef.current?.lastChild?.scrollIntoView({behavior: 'smooth'});
+  }, [allMessages]);
 
   useEffect(() => {
     if (!lastBotMessage) return;
@@ -35,12 +41,14 @@ function Chat() {
   useEffect(() => {
     const allMessagesLength = allMessages.length;
     if (allMessagesLength === 0) return;
-    if (allMessages[allMessagesLength - 1] === lastBotMessage) return;
+    // if (allMessages[allMessagesLength - 1] === lastBotMessage) return; // Зачем я это сделал?
 
     const getCompletion = async () => {
       try {
+        // Мб закэтчить ответ связанный с количеством токенов и в случае него уменьшать отправляемый allMessages?
         const completion = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
+          // TODO: мониторить размер allMessages, не должен превышать 4к токенов. А как понять сколько он токенов?
           messages: allMessages,
         });
         setLastBotMessage(completion.data.choices[0].message);
@@ -59,7 +67,11 @@ function Chat() {
 
   return (
     <div className="chat">
-      <div className={`chat__messages`} style={{marginBottom: chatMessagesMargin}}>
+      <div
+        className={`chat__messages`}
+        style={{marginBottom: chatMessagesMargin}}
+        ref={chatMessagesRef}
+      >
         {
           allMessages.map((message, index) => (
             <div key={index} className={`message chat__message message_${message.role}`}>
@@ -79,5 +91,4 @@ function Chat() {
   );
 }
 
-export default Chat
-;
+export default Chat;
