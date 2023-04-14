@@ -9,13 +9,14 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+// TODO: сообщениям нужны айдишники, чтобы при одинаковом тексте сообщения не считались одинаковыми
 function Chat() {
   const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
   const [lastBotMessage, setLastBotMessage] = useState(null);
-  const [chatMessagesMargin, setChatMessagesMargin] = useState(70);
 
-  const chatInputRef = useRef(null);
+  const prevLastUserMessageRef = useRef(null);
+  const prevLastBotMessageRef = useRef(null);
   const chatMessagesRef = useRef(null);
 
   const addUserMessage = (messageText) => {
@@ -24,31 +25,34 @@ function Chat() {
   };
 
   useEffect(() => {
+    if (!Object.is(prevLastUserMessageRef.current, lastUserMessage)) {
+      setAllMessages([...allMessages, lastUserMessage]);
+      prevLastUserMessageRef.current = lastUserMessage;
+    } else if (!Object.is(prevLastBotMessageRef.current, lastBotMessage)) {
+      setAllMessages([...allMessages, lastBotMessage]);
+      prevLastBotMessageRef.current = lastBotMessage;
+    }
+  }, [lastBotMessage, lastUserMessage, allMessages]);
+
+  useEffect(() => {
     if (chatMessagesRef)
       chatMessagesRef.current?.lastChild?.scrollIntoView({behavior: 'smooth'});
   }, [allMessages]);
 
   useEffect(() => {
-    if (!lastBotMessage) return;
-    setAllMessages([...allMessages, lastBotMessage]);
-  }, [lastBotMessage]);
-
-  useEffect(() => {
-    if (!lastUserMessage) return;
-    setAllMessages([...allMessages, lastUserMessage]);
-  }, [lastUserMessage]);
-
-  useEffect(() => {
     const allMessagesLength = allMessages.length;
     if (allMessagesLength === 0) return;
-    // if (allMessages[allMessagesLength - 1] === lastBotMessage) return; // Зачем я это сделал?
+    // Чтобы бот не отвечал на свои же сообщения
+    if (allMessages[allMessagesLength - 1] === prevLastBotMessageRef.current) return;
 
     const getCompletion = async () => {
       try {
-        // Мб закэтчить ответ связанный с количеством токенов и в случае него уменьшать отправляемый allMessages?
+        // TODO: модалочку какую то надо на ошибки.
         const completion = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
           // TODO: мониторить размер allMessages, не должен превышать 4к токенов. А как понять сколько он токенов?
+          // Мб есть метод для провреки количества токенов?
+          // Мб закэтчить ответ связанный с количеством токенов и в случае него уменьшать отправляемый allMessages?
           messages: allMessages,
         });
         setLastBotMessage(completion.data.choices[0].message);
@@ -59,17 +63,10 @@ function Chat() {
     getCompletion();
   }, [allMessages]);
 
-  useEffect(() => {
-    if (chatInputRef.current) {
-      setChatMessagesMargin(chatInputRef.current.offsetHeight + 10);
-    }
-  }, [chatInputRef.current?.offsetHeight]);
-
   return (
     <div className="chat">
       <div
         className={`chat__messages`}
-        style={{marginBottom: chatMessagesMargin}}
         ref={chatMessagesRef}
       >
         {
@@ -85,7 +82,6 @@ function Chat() {
       </div>
       <ChatInput
         addUserMessage={addUserMessage}
-        ref={chatInputRef}
       />
     </div>
   );
