@@ -1,8 +1,10 @@
-import '../css/App.css';
-import Chat from './Chat';
-import TokenForm from './TokenForm';
-import { Configuration, OpenAIApi } from 'openai';
 import { useEffect, useState } from 'react';
+import { Configuration, OpenAIApi } from 'openai';
+import InfoTooltipPopup from './InfoTooltip';
+import TokenForm from './TokenForm';
+import Chat from './Chat';
+import '../css/App.css';
+
 let configuration;
 let openai;
 
@@ -38,9 +40,6 @@ function App() {
             setInfoTooltipPopupOpen={setInfoTooltipPopupOpen}
             setIsValid={setIsValid}
             setInfoToolText={setInfoToolText}
-            isInfoTooltipPopupOpen={isInfoTooltipPopupOpen}
-            isValid={isValid}
-            infoToolText={infoToolText}
           />
         </div>
       </div>
@@ -50,6 +49,17 @@ function App() {
           setIsSetApiKeyPopupOpen(false);
         }}
         setApi={setApiKey}
+      />
+          <InfoTooltipPopup
+        isOpen={isInfoTooltipPopupOpen}
+        onClose={() => {
+          setInfoTooltipPopupOpen(false);
+          setTimeout(() => {
+            setInfoToolText(null);
+          }, 300);
+        }}
+        isValid={isValid}
+        text={infoToolText}
       />
     </>
   );

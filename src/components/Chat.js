@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import ChatInput from './ChatInput';
-import InfoTooltipPopup from './InfoTooltip';
 
 import '../css/Chat.css';
 
@@ -10,9 +9,6 @@ function Chat({
   setInfoTooltipPopupOpen,
   setIsValid,
   setInfoToolText,
-  isInfoTooltipPopupOpen,
-  isValid,
-  infoToolText,
 }) {
   const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
@@ -96,17 +92,6 @@ function Chat({
         </div>
         <ChatInput addUserMessage={addUserMessage} />
       </div>
-      <InfoTooltipPopup
-        isOpen={isInfoTooltipPopupOpen}
-        onClose={() => {
-          setInfoTooltipPopupOpen(false);
-          setTimeout(() => {
-            setInfoToolText(null);
-          }, 300);
-        }}
-        isValid={isValid}
-        text={infoToolText}
-      />
     </>
   );
 }
