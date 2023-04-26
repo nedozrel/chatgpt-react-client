@@ -1,23 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import ChatInput from './ChatInput';
 import InfoTooltipPopup from './InfoTooltip';
-import TokenForm from './TokenForm';
-import { Configuration, OpenAIApi } from 'openai';
 
 import '../css/Chat.css';
 
-let configuration;
-let openai;
-
 // TODO: сообщениям нужны айдишники, чтобы при одинаковом тексте сообщения не считались одинаковыми
-function Chat() {
-  const [isValid, setIsValid] = useState(false);
-  const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
-  const [infoToolText, setInfoToolText] = useState(null);
-
-  const [isSetApiKeyPopupOpen, setIsSetApiKeyPopupOpen] = useState(false);
-  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey'));
-
+function Chat({
+  openai,
+  setInfoTooltipPopupOpen,
+  setIsValid,
+  setInfoToolText,
+  isInfoTooltipPopupOpen,
+  isValid,
+  infoToolText,
+}) {
   const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
   const [lastBotMessage, setLastBotMessage] = useState(null);
@@ -30,19 +26,6 @@ function Chat() {
     const newMessage = { role: 'user', content: messageText };
     setLastUserMessage(newMessage);
   };
-
-  const checkApiKey = () => {
-    if (apiKey) {
-      configuration = new Configuration({
-        apiKey,
-      });
-      openai = new OpenAIApi(configuration);
-    } else {
-      setIsSetApiKeyPopupOpen(true);
-    }
-  };
-
-  useEffect(checkApiKey, [apiKey]);
 
   useEffect(() => {
     if (!Object.is(prevLastUserMessageRef.current, lastUserMessage)) {
@@ -123,13 +106,6 @@ function Chat() {
         }}
         isValid={isValid}
         text={infoToolText}
-      />
-      <TokenForm
-        isOpen={isSetApiKeyPopupOpen}
-        onClose={() => {
-          setIsSetApiKeyPopupOpen(false);
-        }}
-        setApi={setApiKey}
       />
     </>
   );
