@@ -1,12 +1,10 @@
 .app {
-  border: 1px solid #b6b6b6;
-
   height: calc(100vh - 100px);
   padding: 50px;
   background-color: #E5E5E6;
   display: grid;
   grid-template-columns: 326px 1fr;
-  grid-template-rows: 62px;
+  grid-template-rows: 62px calc(100vh - 100px - 62px);
   grid-template-areas:
     'sidebar-header chat-header'
     'sidebar-list chat';
@@ -36,6 +34,6 @@
 }
 
 .app__chat {
-  background-color: beige;
+  background-color: #FFF;
   grid-area: chat;
 }
