@@ -3,8 +3,9 @@ import { Configuration, OpenAIApi } from 'openai';
 import InfoTooltipPopup from './InfoTooltip';
 import TokenForm from './TokenForm';
 import Chat from './Chat';
-import '../css/App.css';
-
+import ChatList from './ChatList';
+import '../css/app.css';
+import pen from '../images/svg/pen.svg';
 let configuration;
 let openai;
 
@@ -30,11 +31,13 @@ function App() {
 
   return (
     <>
-      <div className="App">
-        <aside className="sidebar">
-          <div className="chat-list"></div>
-        </aside>
-        <div className="main">
+      <div className="app">
+        <ChatList />
+        <button className="app__chat-header">
+          <img className="app__chat-pen" src={pen} alt="pen" />
+          Задать поведение
+        </button>
+        <div className="app__chat">
           <Chat
             openai={openai}
             setInfoTooltipPopupOpen={setInfoTooltipPopupOpen}
@@ -43,14 +46,14 @@ function App() {
           />
         </div>
       </div>
-      <TokenForm
+      {/* <TokenForm
         isOpen={isSetApiKeyPopupOpen}
         onClose={() => {
           setIsSetApiKeyPopupOpen(false);
         }}
         setApi={setApiKey}
       />
-          <InfoTooltipPopup
+      <InfoTooltipPopup
         isOpen={isInfoTooltipPopupOpen}
         onClose={() => {
           setInfoTooltipPopupOpen(false);
@@ -60,7 +63,7 @@ function App() {
         }}
         isValid={isValid}
         text={infoToolText}
-      />
+      /> */}
     </>
   );
 }

@@ -1,14 +1,17 @@
 .chat {
-  position: absolute;
+  box-sizing: border-box;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   background-color: #fff;
   overflow: hidden;
+  border-right: 1px solid #b6b6b6;
+  border-bottom: 1px solid #b6b6b6;
+
 }
 
 .chat__messages {
@@ -63,8 +66,6 @@
 .message_assistant {
   justify-content: flex-start;
 }
-
-/*----------------------------------------------------------------*/
 
 .chat-input {
   width: 100%;
