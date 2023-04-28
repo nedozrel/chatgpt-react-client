@@ -97,7 +97,6 @@
 
 .chat-input {
   display: flex;
-
   column-gap: 115px;
   background: #fff;
   padding: 20px 40px 20px 20px;
@@ -116,6 +115,10 @@
   line-height: 23px;
 }
 
+.chat-input__textarea:disabled {
+  background-color: #FFF;
+}
+
 .chat-input__textarea:focus-visible {
   outline: 0;
 }
@@ -126,4 +129,8 @@
   border: none;
   background: url('../images/svg/chat-plane.svg');
   cursor: pointer;
+}
+
+.chat-input__btn-send:disabled {
+  display: none;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-function ChatInput({addUserMessage}) {
+function ChatInput({addUserMessage, disabled}) {
   const [inputText, setInputText] = useState('');
   const textAreaRef = useRef(null);
 
@@ -43,11 +43,12 @@ function ChatInput({addUserMessage}) {
   return (
     <div className="chat-input">
       <textarea
+        disabled={disabled}
         autoFocus
         rows="1"
         placeholder="Введите текст..."
         tabIndex="0"
-        className="chat-input__textarea "
+        className="chat-input__textarea"
         onChange={e => handleTextareaChange(e)}
         onKeyDown={e => handleTextareaKeyDown(e)}
         onFocus={e => handleTextareaFocus(e)}
@@ -55,6 +56,7 @@ function ChatInput({addUserMessage}) {
         ref={textAreaRef}
       />
       <button
+        disabled={disabled}
         className="chat-input__btn-send"
         onClick={() => handleButtonClick()}>
       </button>

@@ -8,9 +8,9 @@
   align-items: center;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
 }
 
 .popup_opened {
@@ -20,46 +20,29 @@
 }
 
 .popup__inner {
-  position: relative;
   display: flex;
-  flex-direction: column;
+  margin: 78px 89px;
   width: 100%;
-  padding: 35px;
-  max-width: 358px;
-  background-color: white;
+  height: calc(100% - 100px);
+  position: relative;
+  flex-direction: column;
   color: black;
-  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-}
-
-@media screen and (max-width: 600px) {
-  .popup__inner {
-    width: 238px;
-    padding: 25px 22px;
-  }
+  font-family: 'Arial';
 }
 
 .popup__button-close {
   cursor: pointer;
   display: flex;
   aspect-ratio: 1;
-  background: url("../images//svg/cross.svg");
+  background: url('../images/svg/cross.svg');
   background-repeat: no-repeat;
   background-size: cover;
   padding: 0;
   border: 0;
   position: absolute;
-  width: 32px;
-  top: -40px;
-  right: -40px;
-}
-
-@media screen and (max-width: 600px) {
-  .popup__button-close {
-    width: 20px;
-    right: 0px;
-    top: -36px;
-  }
+  width: 25px;
+  top: 25px;
+  right: 25px;
 }
 
 .popup__button-close:hover {
@@ -73,18 +56,12 @@
 }
 
 .popup__title {
-  margin: 0 0 48px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 74px;
+  margin: 0 0 73px;
   font-weight: 900;
-  font-size: 24px;
-  line-height: 29px;
-}
-
-@media screen and (max-width: 600px) {
-  .popup__title {
-    font-size: 18px;
-    line-height: 22px;
-    margin-bottom: 75px;
-  }
 }
 
 .popup__title_el_info-tolltip {
@@ -101,35 +78,33 @@
 }
 
 .popup__form-button-submit {
+  padding: 15px 45px;
+  align-self: center;
+  border: none;
   cursor: pointer;
-  margin-top: 48px;
-  border: 1px solid black;
-  border-radius: 2px;
-  padding: 13px 0;
-  background-color: black;
+  margin-top: 72px;
+  background: #c9f0bf;
+  border-radius: 12px;
+  width: min-content;
+  color: #585858;
   font-size: 18px;
   line-height: 22px;
   text-align: center;
-  color: white;
-}
-
-@media screen and (max-width: 600px) {
-  .popup__form-button-submit {
-    font-size: 14px;
-    line-height: 17px;
-  }
+  font-size: 32px;
+  line-height: 37px;
 }
 
 .popup__form-button-submit:hover {
-  opacity: 0.8;
+  background: #A4C89B;
 }
 
 .popup__form-input {
+  text-align: center;
   border: none;
   outline: none;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 32px;
+  line-height: 37px;
   color: #000000;
   padding: 0 0 9px;
-  border-bottom: 1px solid rgba(00, 00, 00, 0.2);
+  border-bottom: 2px solid #000000;
 }

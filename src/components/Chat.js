@@ -6,20 +6,11 @@ import '../css/Chat.css';
 // TODO: сообщениям нужны айдишники, чтобы при одинаковом тексте сообщения не считались одинаковыми
 function Chat({
   openai,
-  setInfoTooltipPopupOpen,
-  setIsValid,
-  setInfoToolText,
+  setIsSetApiKeyPopupOpen,
+  isDisabledTextArea,
+  setIsDisabledTextArea,
 }) {
-  const [allMessages, setAllMessages] = useState([
-    { role: 'user', content: 'Запрос от Пользователя' },
-    { role: 'assistant', content: 'Ответ от Бота' },
-    { role: 'user', content: 'Запрос от Пользователя' },
-    { role: 'error-user ', content: 'Неверный токен' },
-    { role: 'assistant', content: 'Ответ от Бота' },
-    { role: 'error-assistant', content: 'Ошибка со стороны сервера' },
-    { role: 'user', content: 'Запрос от Пользователя' },
-    { role: 'error-assistant', content: 'Ошибка со стороны сервера' },
-  ]);
+  const [allMessages, setAllMessages] = useState([]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
   const [lastBotMessage, setLastBotMessage] = useState(null);
 
@@ -30,6 +21,15 @@ function Chat({
   const addUserMessage = (messageText) => {
     const newMessage = { role: 'user', content: messageText };
     setLastUserMessage(newMessage);
+  };
+
+  const addErrorMessage = ({ role, messageText, onClick }) => {
+    const error = { role: role, content: messageText, onClick };
+    setAllMessages([...allMessages, error]);
+  };
+
+  const addUserErrorMessage = ({ messageText, onClick }) => {
+    addErrorMessage({ role: 'error-user', messageText, onClick });
   };
 
   useEffect(() => {
@@ -50,12 +50,6 @@ function Chat({
   }, [allMessages]);
 
   useEffect(() => {
-    const allMessagesLength = allMessages.length;
-    if (allMessagesLength === 0) return;
-    // Чтобы бот не отвечал на свои же сообщения
-    if (allMessages[allMessagesLength - 1] === prevLastBotMessageRef.current)
-      return;
-
     const getCompletion = async () => {
       try {
         // TODO: модалочку какую то надо на ошибки.
@@ -68,33 +62,56 @@ function Chat({
         });
         setLastBotMessage(completion.data.choices[0].message);
       } catch (error) {
-        openInfoTooltip(false, 'Неверный токен');
-        setInfoTooltipPopupOpen(true);
+        if (
+          !(
+            [
+              "Cannot read properties of undefined (reading 'createChatCompletion')",
+              'Request failed with status code 401',
+            ].indexOf(error.message) === '-1'
+          )
+        ) {
+          setIsDisabledTextArea(true);
+          localStorage.clear();
+          addUserErrorMessage({
+            messageText: 'Неверный токен',
+            onClick: () => {
+              setIsSetApiKeyPopupOpen(true);
+            },
+          });
+        }
+        console.log(error.message);
         console.error(error);
       }
     };
-    getCompletion();
-  }, [allMessages]);
 
-  const openInfoTooltip = (valid, text) => {
-    setIsValid(valid);
-    text && setInfoToolText(text);
-    setInfoTooltipPopupOpen(true);
-  };
+    const allMessagesLength = allMessages.length;
+    if (allMessagesLength === 0) return;
+    // Чтобы бот не отвечал на свои же сообщения
+    if (allMessages[allMessagesLength - 1] === prevLastUserMessageRef.current) {
+      getCompletion();
+    }
+  }, [allMessages]);
 
   return (
     <>
       <div className="chat">
         <div className={`chat__messages`} ref={chatMessagesRef}>
           {allMessages.map((message, index) => (
-            <div key={index} className={`message message_role_${message.role}`}>
+            <div
+              onClick={message.onClick && message.onClick}
+              key={index}
+              className={`message message_role_${message.role}`}
+            >
               <p className={`message__text message__text_role_${message.role}`}>
                 {message.content}
               </p>
             </div>
           ))}
         </div>
-        <ChatInput addUserMessage={addUserMessage} />
+        <ChatInput
+          addUserMessage={addUserMessage}
+          disabled={isDisabledTextArea}
+        />
       </div>
     </>
   );

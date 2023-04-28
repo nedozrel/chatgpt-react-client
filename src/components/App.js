@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Configuration, OpenAIApi } from 'openai';
-import InfoTooltipPopup from './InfoTooltip';
 import TokenForm from './TokenForm';
 import Chat from './Chat';
 import ChatList from './ChatList';
@@ -10,12 +9,10 @@ let configuration;
 let openai;
 
 function App() {
-  const [isValid, setIsValid] = useState(false);
-  const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
-  const [infoToolText, setInfoToolText] = useState(null);
-
   const [isSetApiKeyPopupOpen, setIsSetApiKeyPopupOpen] = useState(false);
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey'));
+  const [isDisabledTextArea, setIsDisabledTextArea] = useState(false);
+
   const checkApiKey = () => {
     if (apiKey) {
       configuration = new Configuration({
@@ -31,7 +28,7 @@ function App() {
 
   return (
     <>
-      <div className="app">
+     {apiKey && <div className="app">
         <ChatList />
         <button className="app__chat-header">
           <img className="app__chat-pen" src={pen} alt="pen" />
@@ -40,30 +37,20 @@ function App() {
         <div className="app__chat">
           <Chat
             openai={openai}
-            setInfoTooltipPopupOpen={setInfoTooltipPopupOpen}
-            setIsValid={setIsValid}
-            setInfoToolText={setInfoToolText}
+            setIsSetApiKeyPopupOpen={setIsSetApiKeyPopupOpen}
+            isDisabledTextArea={isDisabledTextArea}
+            setIsDisabledTextArea={setIsDisabledTextArea}
           />
         </div>
-      </div>
-      {/* <TokenForm
+      </div>}
+      <TokenForm
         isOpen={isSetApiKeyPopupOpen}
         onClose={() => {
           setIsSetApiKeyPopupOpen(false);
+          setIsDisabledTextArea(false);
         }}
         setApi={setApiKey}
       />
-      <InfoTooltipPopup
-        isOpen={isInfoTooltipPopupOpen}
-        onClose={() => {
-          setInfoTooltipPopupOpen(false);
-          setTimeout(() => {
-            setInfoToolText(null);
-          }, 300);
-        }}
-        isValid={isValid}
-        text={infoToolText}
-      /> */}
     </>
   );
 }
