@@ -3,7 +3,7 @@ import { Configuration, OpenAIApi } from 'openai';
 import TokenForm from './TokenForm';
 import Chat from './Chat';
 import ChatList from './ChatList';
-import '../css/app.css';
+import '../css/App.css';
 import pen from '../images/svg/pen.svg';
 let configuration;
 let openai;
