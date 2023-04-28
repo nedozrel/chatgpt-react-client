@@ -11,42 +11,13 @@ function Chat({
   setInfoToolText,
 }) {
   const [allMessages, setAllMessages] = useState([
-    {
-      role: 'user',
-      content:
-        'вот это максимальная длина плашки сообщения (855п вроде), в высоту можно и больше, в зависимости от количества символов допустимых',
-    },
-    { role: 'user', content: 'юзер ввёл странную гхадость' },
+    { role: 'user', content: 'Запрос от Пользователя' },
+    { role: 'assistant', content: 'Ответ от Бота' },
+    { role: 'user', content: 'Запрос от Пользователя' },
     { role: 'error-user ', content: 'Неверный токен' },
-    {
-      role: 'assistant',
-      content:
-        'ццццццс ааааа ддадда проверка проверка проверка проверяем проверяем',
-    },
-    { role: 'error-assistant', content: 'Ошибка со стороны сервера' },{
-      role: 'user',
-      content:
-        'вот это максимальная длина плашки сообщения (855п вроде), в высоту можно и больше, в зависимости от количества символов допустимых',
-    },
-    { role: 'user', content: 'юзер ввёл странную гхадость' },
-    { role: 'error-user ', content: 'Неверный токен' },
-    {
-      role: 'assistant',
-      content:
-        'ццццццс ааааа ддадда проверка проверка проверка проверяем проверяем',
-    },
-    { role: 'error-assistant', content: 'Ошибка со стороны сервера' },{
-      role: 'user',
-      content:
-        'вот это максимальная длина плашки сообщения (855п вроде), в высоту можно и больше, в зависимости от количества символов допустимых',
-    },
-    { role: 'user', content: 'юзер ввёл странную гхадость' },
-    { role: 'error-user ', content: 'Неверный токен' },
-    {
-      role: 'assistant',
-      content:
-        'ццццццс ааааа ддадда проверка проверка проверка проверяем проверяем',
-    },
+    { role: 'assistant', content: 'Ответ от Бота' },
+    { role: 'error-assistant', content: 'Ошибка со стороны сервера' },
+    { role: 'user', content: 'Запрос от Пользователя' },
     { role: 'error-assistant', content: 'Ошибка со стороны сервера' },
   ]);
   const [lastUserMessage, setLastUserMessage] = useState(null);
