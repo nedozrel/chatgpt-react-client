@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-function ChatInput({addUserMessage}) {
+function ChatInput({addUserMessage, disabled}) {
   const [inputText, setInputText] = useState('');
   const textAreaRef = useRef(null);
 
   const changeTextareaSize = (textArea) => {
-    const minTextareaHeight = 20;
-    const maxTextareaHeight = 120;
+    const minTextareaHeight = 23;
+    const maxTextareaHeight = 92;
     textArea.style.height = 'auto'; // сбрасываем фиксированную высоту, чтобы определить реальную высоту текста
     textArea.style.height = `${Math.min(Math.max(textArea.scrollHeight, minTextareaHeight), maxTextareaHeight)}px`; // устанавливаем высоту textarea в зависимости от ее содержимого
   };
@@ -43,11 +43,12 @@ function ChatInput({addUserMessage}) {
   return (
     <div className="chat-input">
       <textarea
+        disabled={disabled}
         autoFocus
         rows="1"
-        placeholder="Send a message..."
+        placeholder="Введите текст..."
         tabIndex="0"
-        className="chat-input__input"
+        className="chat-input__textarea"
         onChange={e => handleTextareaChange(e)}
         onKeyDown={e => handleTextareaKeyDown(e)}
         onFocus={e => handleTextareaFocus(e)}
@@ -55,9 +56,9 @@ function ChatInput({addUserMessage}) {
         ref={textAreaRef}
       />
       <button
+        disabled={disabled}
         className="chat-input__btn-send"
         onClick={() => handleButtonClick()}>
-        send
       </button>
     </div>
   );

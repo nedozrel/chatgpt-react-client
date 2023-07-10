@@ -1,23 +1,23 @@
 import '../css/Popup.css';
-import Error from '../images/svg/error.svg';
-import Success from '../images/svg/success.svg';
+import error from '../images/svg/error.svg';
+import success from '../images/svg/success.svg';
 
 function InfoTooltip({ isOpen, onClose, isValid, text }) {
   return (
     <section
       className={`popup popup_el_info-tolltip${isOpen ? ' popup_opened' : ''}`}
     >
+      <button
+        className="popup__button-close"
+        type="button"
+        aria-label="Закрыть поп-ап"
+        onClick={onClose}
+      ></button>
       <div className="popup__inner">
-        <button
-          className="popup__button-close"
-          type="button"
-          aria-label="Закрыть поп-ап"
-          onClick={onClose}
-        ></button>
         {
           <img
             className="popup__image popup__image_el_info-tolltip"
-            src={isValid ? Success : Error}
+            src={isValid ? success : error}
             alt={isValid ? 'Успешно' : 'Ошибка'}
           />
         }

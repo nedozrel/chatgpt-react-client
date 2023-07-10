@@ -1,7 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../css/Popup.css';
 
 function TokenForm({ isOpen, onClose, setApi }) {
+  const inputEl = useRef();
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        inputEl.current.focus();
+      }, 100);
+    }
+  }, [isOpen]);
+
   const [formValue, setFormValue] = useState({
     apiKey: '',
   });
@@ -33,6 +42,7 @@ function TokenForm({ isOpen, onClose, setApi }) {
           name="edit-api-key"
         >
           <input
+            ref={inputEl}
             className="popup__form-input"
             required
             id="apiKey"

@@ -1,17 +1,57 @@
-import '../css/App.css';
+import { useEffect, useState } from 'react';
+import { Configuration, OpenAIApi } from 'openai';
+import TokenForm from './TokenForm';
 import Chat from './Chat';
+import ChatList from './ChatList';
+import '../css/App.css';
+import pen from '../images/svg/pen.svg';
+let configuration;
+let openai;
 
 function App() {
+  const [isSetApiKeyPopupOpen, setIsSetApiKeyPopupOpen] = useState(false);
+  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey'));
+  const [isDisabledTextArea, setIsDisabledTextArea] = useState(false);
+
+  const checkApiKey = () => {
+    if (apiKey) {
+      configuration = new Configuration({
+        apiKey,
+      });
+      openai = new OpenAIApi(configuration);
+    } else {
+      setIsSetApiKeyPopupOpen(true);
+    }
+  };
+
+  useEffect(checkApiKey, [apiKey]);
+
   return (
-    <div className="App">
-      <aside className="sidebar">
-        <div className="chat-list">
+    <>
+     {apiKey && <div className="app">
+        <ChatList />
+        <button className="app__chat-header">
+          <img className="app__chat-pen" src={pen} alt="pen" />
+          Задать поведение
+        </button>
+        <div className="app__chat">
+          <Chat
+            openai={openai}
+            setIsSetApiKeyPopupOpen={setIsSetApiKeyPopupOpen}
+            isDisabledTextArea={isDisabledTextArea}
+            setIsDisabledTextArea={setIsDisabledTextArea}
+          />
         </div>
-      </aside>
-      <div className="main">
-        <Chat />
-      </div>
-    </div>
+      </div>}
+      <TokenForm
+        isOpen={isSetApiKeyPopupOpen}
+        onClose={() => {
+          setIsSetApiKeyPopupOpen(false);
+          setIsDisabledTextArea(false);
+        }}
+        setApi={setApiKey}
+      />
+    </>
   );
 }
 
